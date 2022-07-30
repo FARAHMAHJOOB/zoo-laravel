@@ -17,15 +17,15 @@
                         <i class="fa fa-paw"></i>
                         <span>حیوانات</span>
                     </a>
-                    <a href="" class="sidebar-link">
+                    <a href="{{route('admin.animal.gallery.allGallery')}}" class="sidebar-link">
                         <i class="far fa-images"></i>
                         <span>گالری</span>
                     </a>
-                    <a href="" class="sidebar-link">
+                    <a href="{{route('admin.animal.category.index')}}" class="sidebar-link">
                         <i class="fa fa-list-alt"></i>
                         <span>دسته بندی ها</span>
                     </a>
-                    <a href="" class="sidebar-link">
+                    <a href="{{route('admin.animal.protectiveStatus.index')}}" class="sidebar-link">
                         <i class="fa fa-shield"></i>
                         <span>وضعیت حفاظتی</span>
                     </a>
@@ -38,16 +38,16 @@
                     <i class="fas fa-angle-left angle"></i>
                 </section>
                 <section class="sidebar-dropdown mr-2">
-                    <a href="" class="sidebar-link">
+                    <a href="{{ route('admin.content.menu.index') }}" class="sidebar-link">
                         <i class="fa fa-th-list"></i>
                         <span>منو</span>
                     </a>
-                    <a href="" class="sidebar-link">
+                    <a href="{{ route('admin.content.slider.index') }}" class="sidebar-link">
                         <i class="fa fa-exchange"></i>
                         <span>اسلایدر</span>
                     </a>
 
-                    <a href="" class="sidebar-link">
+                    <a href="{{ route('admin.content.page.index') }}" class="sidebar-link">
                         <i class="fa fa-indent"></i>
                         <span>پیج ساز</span>
                     </a>
@@ -60,16 +60,16 @@
                     <i class="fas fa-angle-left angle"></i>
                 </section>
                 <section class="sidebar-dropdown mr-2">
-                    <a href="" class="sidebar-link">
+                    <a href="{{ route('admin.manager.index') }}" class="sidebar-link">
                         <i class="fas fa-user-cog"></i>
-                        <span>کاربران ادمین</span>
+                        <span>مدیران</span>
                     </a>
-                    <a href="" class="sidebar-link">
+                    <a href="{{ route('admin.user.index') }}" class="sidebar-link">
                         <i class="fas fa-user-friends"></i>
                         <span>کاربران سایت</span>
                     </a>
-                    <a href="" class="sidebar-link">
-                        <i class="fas fa-bars"></i>
+                   <a href="{{ route('admin.role.index') }}" class="sidebar-link">
+                        <i class="fas fa-shield-alt"></i>
                         <span>سطوح دسترسی</span>
                     </a>
                 </section>
@@ -82,19 +82,11 @@
                     <i class="fas fa-angle-left angle"></i>
                 </section>
                 <section class="sidebar-dropdown mr-2">
-                    <a href="" class="sidebar-link">
+                    <a href="{{ route('admin.comment.unseenComment') }}" class="sidebar-link">
                         <i class="fa fa-rocket"></i>
                         <span>نظرات خوانده نشده</span>
                     </a>
-                    <a href="" class="sidebar-link">
-                        <i class="fa fa-ban"></i>
-                        <span>نظرات غیرفعال</span>
-                    </a>
-                    <a href="" class="sidebar-link">
-                        <i class="fa fa-check-square"></i>
-                        <span>نظرات فعال</span>
-                    </a>
-                    <a href="" class="sidebar-link">
+                    <a href="{{ route('admin.comment.index') }}" class="sidebar-link">
                         <i class="fa fa-comments"></i>
                         <span>تمام نظرات </span>
                     </a>
@@ -119,11 +111,11 @@
                 </section>
             </section>
             <!-- <section class="sidebar-part-title">تنظیمات</section> -->
-            <a href="" class="sidebar-link">
+            <a href="{{ route('admin.setting.index') }}" class="sidebar-link">
                 <i class="fas fa-cogs"></i>
                 <span>تنظیمات</span>
             </a>
-            <a href="" class="sidebar-link">
+            <a href="{{ route('admin.faq.index') }}" class="sidebar-link">
                 <i class="fa fa-question-circle"></i>
                 <span>سوالات متداول</span>
             </a>

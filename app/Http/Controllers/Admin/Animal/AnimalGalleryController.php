@@ -16,10 +16,19 @@ class AnimalGalleryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+    public function allGallery()
+    {
+        $animals = Animal::orderBy('created_at', 'desc')->simplePaginate(15);
+        return view('admin.animal.gallery.all-gallery', compact('animals'));
+    }
+
+
     public function index(Animal $animal)
     {
-        $animalImages=$animal->images;
-        return view('admin.animal.gallery.index', compact('animalImages' , 'animal'));
+        $animalImages = $animal->images;
+        return view('admin.animal.gallery.index', compact('animalImages', 'animal'));
     }
 
     /**
@@ -38,7 +47,7 @@ class AnimalGalleryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request , ImageService $imageService ,Animal $animal)
+    public function store(Request $request, ImageService $imageService, Animal $animal)
     {
         $validated = $request->validate([
             'animal_image.*' => 'required|image|mimes:png,jpg,jpeg,gif',
@@ -55,7 +64,7 @@ class AnimalGalleryController extends Controller
                         return redirect()->route('admin.animal.gallery.index', $animal->id)->with('swal-error', 'آپلود عکس با خطا مواجه شد');
                     }
                     $animalImage = AnimalImage::create([
-                        'animal_image' => $result, 'animal_id' => $animal->id ,'status' => 1
+                        'animal_image' => $result, 'animal_id' => $animal->id, 'status' => 1
                     ]);
                 }
                 return true;
@@ -109,12 +118,15 @@ class AnimalGalleryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(AnimalImage $image)
     {
-        //
+        $image->delete();
+        return redirect()->back()->with('swal-success', 'تصویر با موفقیت حذف شد');
+
+
     }
 
-    
+
     public function status(AnimalImage $image)
     {
         if ($image->status == 0) {
@@ -131,6 +143,20 @@ class AnimalGalleryController extends Controller
             }
         } else {
             return response()->json(['status' => false]);
+        }
+    }
+
+
+    public function destroyGallery(Animal $animal)
+    {
+        $flag = DB::transaction(function () use ($animal) {
+            foreach ($animal->images as $image) {
+                $image->delete();
+            }
+            return true;
+        });
+        if ($flag) {
+            return redirect()->route('admin.animal.gallery.allGallery')->with('swal-success', 'گالری با موفقیت حذف شد');
         }
     }
 }

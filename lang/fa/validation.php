@@ -12,6 +12,13 @@ return [
     | as the size rules. Feel free to tweak each of these messages here.
     |
     */
+    'password' => [
+        'letters' => ':attribute باید شامل حداقل یک حرف باشد.',
+        'mixed' => ':attribute باید شامل حروف بزرگ و کوچک باشد',
+        'numbers' => ':attribute باید شامل حداقل یک عدد باشد',
+        'symbols' => ':attribute باید شامل حداقل یک کاراکتر خاص باشد',
+        'uncompromised' => ':attribute وارد شده امن نیست :attribute دیگری انتخاب کنید',
+    ],
 
     "accepted"         => ":attribute باید پذیرفته شده باشد.",
     "active_url"       => "آدرس :attribute معتبر نیست",
@@ -171,6 +178,7 @@ return [
         'national_code'             => 'کد ملی',
         'profile_photo_path'        =>'عکس',
         'permission.*'              =>'دسترسی',
+        'role_id'                    =>'نقش',
         'amount'                    =>'قیمت',
         'delivery_time'             =>'زمان ارسال',
         'delivery_time_unit'        =>'واحد زمان ارسال',
@@ -202,6 +210,9 @@ return [
         'threatening_factors'       =>'عوامل تهدید کننده',
         'habitat'                   =>'زیستگاه',
         'protective_id'             =>'وضعیت حاظتی',
-        
-    ], 
+        'alt'                       =>'متن عکس',
+        'new_password'              =>'رمز عبور جدید',
+        'old_password'              =>'رمز عبور قبلی',
+
+    ],
 ];

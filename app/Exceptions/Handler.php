@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Exception;
 use Throwable;
+use Illuminate\Support\Facades\View;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -47,4 +49,14 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+
+    protected function registerErrorViewPaths()
+    {
+        parent::registerErrorViewPaths();
+        if (request()->is('admin/*')) {
+            View::prependNamespace('errors', realpath(base_path('resources/views/admin/errors')));
+        }
+    }
+
 }

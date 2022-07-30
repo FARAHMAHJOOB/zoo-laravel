@@ -2,13 +2,12 @@
 
 namespace App\Http\Services\Message\Email;
 
-use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 class MailViewProvider extends Mailable {
 
-    use Queueable, SerializesModels;
+    use SerializesModels;
 
     public $details;
 
@@ -21,7 +20,7 @@ class MailViewProvider extends Mailable {
 
     public function build()
     {
-        return $this->subject($this->subject)->view('emails.send-otp');
+        return $this->subject($this->subject)->view('emails.send-email');
     }
 
 }

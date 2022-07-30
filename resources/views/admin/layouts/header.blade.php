@@ -12,15 +12,6 @@
     <section class="body-header" id="body-header">
         <section class="d-flex justify-content-between">
             <section>
-                <span class="mr-5">
-                    <span id="search-area" class="search-area d-none">
-                        <i id="search-area-hide" class="fas fa-times pointer text-dark"></i>
-                        <input id="search-input" type="text" class="search-input">
-                        <i class="fas fa-search pointer text-dark"></i>
-                    </span>
-                    <i id="search-toggle" class="fas fa-search p-1 d-none d-md-inline pointer"></i>
-                </span>
-
                 <span id="full-screen" class="pointer p-1 d-none d-md-inline mr-5">
                     <i id="screen-compress" class="fas fa-compress d-none"></i>
                     <i id="screen-expand" class="fas fa-expand "></i>
@@ -91,8 +82,8 @@
 
                 <span class="ml-3 ml-md-5 position-relative">
                     <span id="header-profile-toggle" class="pointer">
-                        <img class="header-avatar" src="{{ asset('admin-assets/images/admin profile.png') }}" alt="">
-                        <span class="header-username text-light">کامران محمدی</span>
+                        <img class="header-avatar" src="{{ asset(Auth::user()->profile_photo_path) }}" alt="">
+                        <span class="header-username text-light">{{ Auth::user()->fullName }}</span>
                         <i class="fas fa-angle-down"></i>
                     </span>
                     <section id="header-profile" class="header-profile rounded w-100">
@@ -106,12 +97,15 @@
                             <a href="#" class="list-group-item list-group-item-action header-profile-link">
                                 <i class="far fa-envelope"></i>پیام ها
                             </a>
-                            <a href="#" class="list-group-item list-group-item-action header-profile-link">
-                                <i class="fas fa-lock"></i>قفل صفحه
+                            <a href="{{url('password/reset')}}" class="list-group-item list-group-item-action header-profile-link">
+                                <i class="fas fa-lock"></i>تغییر کلمه عبور
                             </a>
-                            <a href="#" class="list-group-item list-group-item-action header-profile-link">
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                            <button type="submit" class="list-group-item list-group-item-action header-profile-link">
                                 <i class="fas fa-sign-out-alt"></i>خروج
-                            </a>
+                            </button>
+                            </form>
                         </section>
                     </section>
                 </span>

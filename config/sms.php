@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'username'=>'09034061105',
-    'password'=>'A!O9L',
+    'username'=>'',
+    'password'=>'',
     'otp_from'=>''
 ];

@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/dashboard';
+    public const HOME = '/admin';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -47,6 +47,18 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        RateLimiter::for('user-login-register-limiter', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
+        RateLimiter::for('user-login-register-confirm-limiter', function (Request $request) {
+            return Limit::perMinute(5)->by(url()->current() . $request->ip());
+        });
+
+        RateLimiter::for('user-login-register-resend-otp-limiter', function (Request $request) {
+            return Limit::perMinute(5)->by(url()->current() . $request->ip());
         });
     }
 }

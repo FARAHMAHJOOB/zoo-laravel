@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Dashboard;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Admin\User\User;
+use App\Http\Controllers\Controller;
+use App\Models\Admin\Comment\Comment;
 
 class AdminDashboardController extends Controller
 {
@@ -12,6 +14,8 @@ class AdminDashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
     public function index()
     {
        return view('admin.index');

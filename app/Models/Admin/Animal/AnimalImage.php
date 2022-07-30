@@ -10,7 +10,7 @@ class AnimalImage extends Model
 {
     use HasFactory,SoftDeletes;
 
-  
+
     protected $guarded = ['id'];
     protected $casts = ['animal_image' => 'array'];
 

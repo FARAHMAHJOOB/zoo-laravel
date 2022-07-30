@@ -28,6 +28,7 @@ return new class extends Migration
             $table->tinyInteger('activation')->default(0)->comment('0 => inactive, 1 => active');
             $table->timestamp('activation_date')->nullable();
             $table->tinyInteger('user_type')->default(0)->comment('0 => user, 1 => admin');
+            $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade')->onUpdate('cascade');
             $table->tinyInteger('status')->default(0);
             $table->foreignId('current_team_id')->nullable();
             $table->rememberToken();

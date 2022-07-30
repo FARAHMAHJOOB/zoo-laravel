@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers\Admin\Animal;
 
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use App\Jobs\ProcessNewAnimal;
+use App\Models\Admin\User\User;
 use Nette\Schema\Elements\AnyOf;
 use Illuminate\Support\Facades\DB;
 use App\Models\Admin\Animal\Animal;
 use App\Http\Controllers\Controller;
+use Illuminate\Pagination\Paginator;
+use App\Models\Admin\Comment\Comment;
+use Symfony\Component\Process\Process;
 use App\Models\Admin\Animal\AnimalMeta;
+use App\Notifications\NewAnimalRegister;
 use App\Http\Services\Image\ImageService;
 use App\Models\Admin\Animal\AnimalCategory;
+use App\Http\Services\Message\MessageService;
 use App\Http\Requests\Admin\Animal\AnimalRequest;
+use App\Http\Services\Message\Email\EmailService;
 use App\Models\Admin\Animal\AnimalProtectiveStatus;
+
 
 class AnimalController extends Controller
 {
@@ -22,8 +32,8 @@ class AnimalController extends Controller
      */
     public function index()
     {
-        $animals = Animal::orderBy('created_at', 'desc')->simplePaginate(15);
-        return view('admin.animal.index', compact('animals'));
+        // $animals = Animal::orderBy('created_at', 'desc')->paginate(20);
+        return view('admin.animal.animal.index');
     }
 
     /**
@@ -35,7 +45,7 @@ class AnimalController extends Controller
     {
         $animalCategories = AnimalCategory::all();
         $protectives = AnimalProtectiveStatus::all();
-        return view('admin.animal.create', compact('animalCategories', 'protectives'));
+        return view('admin.animal.animal.create', compact('animalCategories', 'protectives'));
     }
 
     /**
@@ -74,6 +84,7 @@ class AnimalController extends Controller
                     ]);
                 }
             }
+            ProcessNewAnimal::dispatch($animal->name);
             return true;
         });
         if ($flag) {
@@ -91,7 +102,7 @@ class AnimalController extends Controller
      */
     public function show(Animal $animal)
     {
-        return view('admin.animal.show', compact('animal'));
+        return view('admin.animal.animal.show', compact('animal'));
     }
 
     /**
@@ -104,7 +115,7 @@ class AnimalController extends Controller
     {
         $animalCategories = AnimalCategory::all();
         $protectives = AnimalProtectiveStatus::all();
-        return view('admin.animal.edit', compact('animalCategories', 'protectives', 'animal'));
+        return view('admin.animal.animal.edit', compact('animalCategories', 'protectives', 'animal'));
     }
 
     /**
@@ -181,11 +192,5 @@ class AnimalController extends Controller
         } else {
             return response()->json(['status' => false]);
         }
-    }
-
-
-    public function search(Request $request)
-    {
-      
     }
 }

@@ -13,20 +13,22 @@
     <section class="body-container">
         @include('admin.layouts.sidebar')
         <section id="main-body" class="main-body">
+
             @yield('content')
 
         </section>
     </section>
+
     @include('admin.layouts.script')
     @yield('script')
 
     <section class="toast-wrapper flex-row-reverse">
-        @include('admin.alerts.toast.success')
-        @include('admin.alerts.toast.error')
+        @include('alerts.toast.success')
+        @include('alerts.toast.error')
     </section>
 
-    @include('admin.alerts.sweetalerts.success')
-    @include('admin.alerts.sweetalerts.error')
+    @include('alerts.sweetalerts.success')
+    @include('alerts.sweetalerts.error')
 
 
 

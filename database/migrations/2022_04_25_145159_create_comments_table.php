@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->text('body');
-            $table->foreignId('parent_id')->nullable()->constrained('comments');
-            $table->foreignId('author_id')->constrained('users');
+            $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('author_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('admin_answer')->nullable()->constrained('comments')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('answered_id')->nullable()->constrained('users')->onDelete('cascade')->onUpdate('cascade')->comments('users id who sent to him/her notify');
             $table->unsignedBigInteger('commentable_id');
             $table->string('commentable_type');
             $table->tinyInteger('seen')->default(0)->comment('0 => unseen, 1 => seen');
@@ -35,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::drop('admin_answer');
     }
 };
