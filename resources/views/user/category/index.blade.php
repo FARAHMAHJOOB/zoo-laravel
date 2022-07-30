@@ -21,7 +21,7 @@
                     <img src="{{asset($category->image) }}" alt="{{$category->name}}" class="img-fluid">
                 <figcaption class="d-flex align-items-center justify-content-center">
                     <h2>{{$category->name}}</h2>
-                    <a href="{{route('categoriesAnimals' , $category->id)}}">جزییات</a>
+                    <a href="{{route('home.category-animals' , $category->id)}}">جزییات</a>
                 </figcaption>
             </figure>
             <div class="d-flex justify-content-between tm-text-gray">

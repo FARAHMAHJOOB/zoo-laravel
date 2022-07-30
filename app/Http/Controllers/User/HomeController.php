@@ -18,32 +18,7 @@ class HomeController extends Controller
     public function index()
     {
         $sliders = Slider::all();
-        $animals = Animal::where('status', 1)->orderByDesc('created_at')->paginate(1);
+        $animals = Animal::where('status', 1)->orderByDesc('id')->paginate(1);
         return view('user.index', compact('sliders', 'animals'));
-    }
-
-    public function animalDetails(Animal $animal)
-    {
-
-        return view('user.animal-details', compact('animal'));
-    }
-
-
-    public function categories()
-    {
-        $categories = AnimalCategory::where('status', 1)->orderByDesc('created_at')->paginate(10);
-        return view('user.categories', compact('categories'));
-    }
-
-    public function categoriesAnimals(AnimalCategory $category)
-    {
-        checkStatusRecord($category);
-        return view('user.animal-categories', compact('category'));
-    }
-
-    public function faqs()
-    {
-        $faqs = FAQ::where('status', 1)->orderByDesc('created_at')->paginate(4);
-        return view('user.faqs', compact('faqs'));
     }
 }

@@ -2,7 +2,7 @@
 <html dir="rtl">
 <head>
 	<title>@yield('title')</title>
-    @include('auth.layouts.head-tag')
+    @include('admin.auth.layouts.head-tag')
 </head>
 <body class="text-right">
 	<div class="container-fluid">

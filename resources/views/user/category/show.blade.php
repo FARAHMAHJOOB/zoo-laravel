@@ -23,7 +23,7 @@
                             class="img-fluid">
                         <figcaption class="d-flex align-items-center justify-content-center">
                             <h2>{{ $animal->name }}</h2>
-                            <a href="{{ route('animalDetails', [$animal->id , $animal->slug ]) }}">جزییات</a>
+                            <a href="{{ route('home.animal', [$animal->id , $animal->slug ]) }}">جزییات</a>
                         </figcaption>
                     </figure>
                     <div class="d-flex justify-content-between tm-text-gray">

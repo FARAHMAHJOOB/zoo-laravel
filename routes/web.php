@@ -5,9 +5,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\User\HomeFAQController;
 use App\Http\Controllers\Admin\Faq\FaqController;
 use App\Http\Controllers\Admin\ACL\RoleController;
 use App\Http\Controllers\Admin\User\UserController;
+use App\Http\Controllers\User\HomeAnimalController;
+use App\Http\Controllers\User\HomeCategoryController;
 use App\Http\Controllers\Admin\User\ManagerController;
 use App\Http\Controllers\Admin\Animal\AnimalController;
 use App\Http\Controllers\Admin\ACL\ManagerRoleController;
@@ -55,7 +58,15 @@ Route::middleware('guest')->prefix('auth')->group(function () {
     });
 });
 
-Route::prefix('user')->group(function () {
+// home
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/animal/{animal}/{slug}', [HomeAnimalController::class, 'index'])->name('home.animal')->middleware(CheckStatus::class);
+Route::get('/categories', [HomeCategoryController::class, 'index'])->name('home.categories');
+Route::get('/category/{category}/animals', [HomeCategoryController::class, 'show'])->name('home.category-animals');
+Route::get('/faqs', [HomeFAQController::class, 'index'])->name('home.faqs');
+
+// user account
+Route::middleware('auth')->prefix('user')->group(function () {
     Route::prefix('account')->group(function () {
         Route::get('dashboard', [UserAccountController::class, 'index'])->name('user.account.dashboard');
         Route::post('edit-profile-image', [UserAccountController::class, 'EditProfileImage'])->name('user.account.edit-profile-image');
@@ -64,18 +75,8 @@ Route::prefix('user')->group(function () {
 });
 
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/animal-details/{animal}/{slug}', [HomeController::class, 'animalDetails'])->name('animalDetails')->middleware(CheckStatus::class);
-Route::get('/categories', [HomeController::class, 'categories'])->name('categories');
-Route::get('/categories/{category}/animals', [HomeController::class, 'categoriesAnimals'])->name('categoriesAnimals');
-Route::get('/faqs', [HomeController::class, 'faqs'])->name('faqs');
-
-
-Route::middleware('auth')->prefix('admin')->group(function () {
+Route::middleware(['auth' , 'IsAdmin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.home');
-    Route::post('/notification/read-all', [AdminDashboardController::class, 'readAllNotification'])->name('admin.notification.readAll');
-    Route::post('/comments/read-all', [AdminDashboardController::class, 'readAllComments'])->name('admin.comments.readAll')->middleware('can:edit-comment');
-
     //admin/animals
     Route::middleware('can:read-animal')->prefix('animal')->group(function () {
         Route::get('/', [AnimalController::class, 'index'])->name('admin.animal.index');
@@ -218,8 +219,8 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     //admin/setting
     Route::prefix('setting')->group(function () {
         Route::get('/', [AdminSettingController::class, 'index'])->name('admin.setting.index')->middleware('can:read-setting');
-        Route::get('/edit/{setting}', [AdminSettingController::class, 'edit'])->name('admin.setting.edit')->middleware('can:edit-comment');
-        Route::put('/update/{setting}', [AdminSettingController::class, 'update'])->name('admin.setting.update')->middleware('can:edit-comment');
+        Route::get('/edit/{setting}', [AdminSettingController::class, 'edit'])->name('admin.setting.edit')->middleware('can:edit-setting');
+        Route::put('/update/{setting}', [AdminSettingController::class, 'update'])->name('admin.setting.update')->middleware('can:edit-setting');
     });
 
     //admin/FAQ

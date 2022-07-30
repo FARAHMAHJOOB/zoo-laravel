@@ -14,7 +14,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link nav-link-1 {{ activeLink('categories') }}"
-                        href="{{ route('categories') }}">دسته
+                        href="{{ route('home.categories') }}">دسته
                         بندی</a>
                 </li>
                 @foreach ($menus as $menu)
@@ -36,14 +36,14 @@
                     </li>
                 @endforeach
                 <li class="nav-item">
-                    <a class="nav-link nav-link-1 {{ activeLink('faqs') }}" href="{{ route('faqs') }}">سوالات
+                    <a class="nav-link nav-link-1 {{ activeLink('faqs') }}" href="{{ route('home.faqs') }}">سوالات
                         متداول</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link nav-link-1" href="{{ route('faqs') }}">درباره</a>
+                    <a class="nav-link nav-link-1" href="{{ route('home.faqs') }}">درباره</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link nav-link-1" href="{{ route('faqs') }}">ارتباط با
+                    <a class="nav-link nav-link-1" href="{{ route('home.faqs') }}">ارتباط با
                         ما</a>
                 </li>
             </ul>
@@ -79,7 +79,7 @@
                     <a href="#" class="dropdown-item py-2">
                         <i class="far fa-envelope ml-2"></i>پیام ها
                     </a>
-                    
+
                     <a href="{{ route('auth.user.logout') }}" class="dropdown-item py-2">
                         <i class="fas fa-sign-out-alt ml-2"></i>خروج
                     </a>

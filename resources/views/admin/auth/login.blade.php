@@ -1,5 +1,5 @@
 
-@extends('auth.layouts.master')
+@extends('admin.auth.layouts.master')
 @section('title')
     ورود به حساب کاربری
 @endsection
@@ -24,7 +24,7 @@
                     <h4>ورود به حساب کاربری</h4>
                 </div>
                 <!-- Form -->
-                <form class="px-3" method="POST" action="{{route('auth.admin.login')}}">
+                <form class="px-3" method="POST" action="{{ route('login') }}">
                     @csrf
                     <!-- Input Box -->
                     <div class="form-input d-flex flex-row-reverse">
@@ -75,10 +75,10 @@
                     <div class="mb-5 mt-3">
                         <button type="submit" class="btn btn-block">ورود</button>
                     </div>
-                    {{-- <div class="text-right ">
+                    <div class="text-right ">
                         <a href="{{ route('password.request') }}" class="forget-link">رمز عبور خود را فراموش کرده
                             اید؟</a>
-                    </div> --}}
+                    </div>
                 </form>
             </div>
         </div>

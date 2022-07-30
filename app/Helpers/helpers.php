@@ -18,7 +18,7 @@ function activeLink($route)
     }
 }
 function checkStatusRecord($record){
-    if ($record->getRawOriginal('code') == 0) {
+    if ($record->getRawOriginal('status') == 0) {
         abort(404);
      }
 }
