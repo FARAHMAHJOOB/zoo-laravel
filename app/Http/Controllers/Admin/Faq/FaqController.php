@@ -16,7 +16,7 @@ class FaqController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-   
+
 
     public function index()
     {
@@ -43,7 +43,7 @@ class FaqController extends Controller
      */
     public function store(FaqRequest $request)
     {
-      Faq::create($request->all());
+      Faq::create($request->validated());
       return redirect()->route('admin.faq.index')->with('swal-success', 'سوال جدید با موفقیت ثبت گردید');
 
     }
@@ -79,7 +79,7 @@ class FaqController extends Controller
      */
     public function update(FaqRequest $request, Faq $faq)
     {
-        $faq->update($request->all());
+        $faq->update($request->validated());
         return redirect()->route('admin.faq.index')->with('swal-success', 'سوال با موفقیت ویرایش گردید');
     }
 
@@ -97,17 +97,7 @@ class FaqController extends Controller
 
     public function status(Faq $faq)
     {
-        $faq->status = $faq->status == 0 ? 1 : 0;
-        $result = $faq->save();
-        if ($result) {
-            if ($faq->status == 0) {
-                return response()->json(['status' => true, 'checked' => false]);
-            } else {
-                return response()->json(['status' => true, 'checked' => true]);
-            }
-        } else {
-            return response()->json(['status' => false]);
-        }
+       setStatus($faq);
     }
 
 }

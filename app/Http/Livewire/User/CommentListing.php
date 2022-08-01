@@ -59,13 +59,7 @@ class CommentListing extends Component
                 'commentable_id'   => $this->animal,
                 'commentable_type' => 'App\Models\Admin\Animal\Animal'
             ]);
-            if ($newComment) {
-                $this->dispatchBrowserEvent('swal-success', ['text' => 'دیدگاه شما ثبت گردید، پس از تایید مدیر، در سایت نمایش داده خواهد شد']);
-                $this->dispatchBrowserEvent('clear-ckeditor', 'clear-ckeditor');
-                $this->body = '';
-            } else {
-                $this->dispatchBrowserEvent('swal-error', ['text' => 'در ثبت دیدگاه مشکلی پیش آمد']);
-            }
+            $this->sendResponse($newComment ,  'دیدگاه شما ثبت گردید، پس از تایید مدیر، در سایت نمایش داده خواهد شد' ,  $this->body);
         } elseif ($this->parent_id !== null && $this->editComment == null) {
             $answerComment = Comment::create([
                 'answered_id'      => $this->answered_id,
@@ -75,22 +69,27 @@ class CommentListing extends Component
                 'commentable_id'   => $this->animal,
                 'commentable_type' => 'App\Models\Admin\Animal\Animal'
             ]);
-            if ($answerComment) {
-                $this->dispatchBrowserEvent('swal-success', ['text' => 'پاسخ شما ثبت گردید، پس از تایید مدیر، در سایت نمایش داده خواهد شد']);
-                $this->dispatchBrowserEvent('clear-ckeditor', 'clear-ckeditor');
-                $this->body = '';
-            } else {
-                $this->dispatchBrowserEvent('swal-error', ['text' => 'در ثبت پاسخ مشکلی پیش آمد']);
-            }
+            $this->sendResponse($answerComment , 'پاسخ شما ثبت گردید، پس از تایید مدیر، در سایت نمایش داده خواهد شد' ,  $this->body);
+
+
         } elseif ($this->editComment !== null && $this->parent_id == null) {
             $commentWillEdit = Comment::findOrFail($this->editComment);
-            $commentWillEdit->update([
+            $editedComment = $commentWillEdit->update([
                 'body'   => $this->body,
                 'status' => 0,
             ]);
-            $this->dispatchBrowserEvent('swal-success', ['text' => 'نظر ویرایش گردید، پس از تایید کارشناس، در سایت نمایش داده خواهد شد.']);
+            $this->sendResponse($editedComment ,  'نظر ویرایش گردید، پس از تایید کارشناس، در سایت نمایش داده خواهد شد.' ,  $this->editComment);
+
+        }
+    }
+    public function sendResponse($var , $message , $clearVar)
+    {
+        if ($var) {
+            $this->dispatchBrowserEvent('swal-success', ['text' => $message]);
             $this->dispatchBrowserEvent('clear-ckeditor', 'clear-ckeditor');
-            $this->editComment = '';
+           $clearVar = '';
+        } else {
+            $this->dispatchBrowserEvent('swal-error', ['text' => 'در ثبت عملیات مشکلی پیش آمد']);
         }
     }
 

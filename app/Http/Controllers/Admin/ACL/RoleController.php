@@ -48,19 +48,14 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        $flag = DB::transaction(function () use ($request) {
-            $inputs = $request->all();
+        $inputs = $request->validated();
+        $flag = DB::transaction(function () use ($inputs) {
             $role = Role::create($inputs);
             $inputs['permission'] = $inputs['permission'] ?? [];
             $role->permissions()->sync($inputs['permission']);
             return true;
         });
-
-        if ($flag) {
-            return redirect()->route('admin.role.index')->with('swal-success', 'نقش جدید با موفقیت ثبت شد');
-        } else {
-            return redirect()->route('admin.role.create')->with('swal-error', 'در ثبت نقش جدید خطایی رخ داد. دوباره امتحان کنید');
-        }
+        return endTransaction($flag, 'admin.role.index', 'نقش جدید با موفقیت ثبت شد');
     }
 
     /**
@@ -103,11 +98,7 @@ class RoleController extends Controller
             $role->permissions()->sync($inputs['permission']);
             return true;
         });
-        if ($flag) {
-            return redirect()->route('admin.role.index')->with('swal-success', 'نقش با موفقیت ویرایش شد');
-        } else {
-            return redirect()->route('admin.role.edit', $role->id)->with('swal-error', 'در ویراش نقش خطایی رخ داد. دوباره امتحان کنید');
-        }
+        return endTransaction($flag, 'admin.role.index', 'نقش با موفقیت ویرایش شد');
     }
 
     /**
@@ -122,18 +113,5 @@ class RoleController extends Controller
         return redirect()->route('admin.role.index')->with('swal-success', 'نقش با موفقیت حذف گردید');
     }
 
-    public function status(Role $role)
-    {
-        $role->status = $role->status == 0 ? 1 : 0;
-        $result = $role->save();
-        if ($result) {
-            if ($role->status == 0) {
-                return response()->json(['status' => true, 'checked' => false]);
-            } else {
-                return response()->json(['status' => true, 'checked' => true]);
-            }
-        } else {
-            return response()->json(['status' => false]);
-        }
-    }
+
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin\User\User;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Comment\Comment;
+use Illuminate\Support\Facades\Auth;
 
 class AdminDashboardController extends Controller
 {
@@ -18,7 +19,8 @@ class AdminDashboardController extends Controller
 
     public function index()
     {
-       return view('admin.index');
+        $notifies = Auth::user()->unreadNotifications;
+       return view('admin.index' , compact('notifies'));
     }
 
     /**

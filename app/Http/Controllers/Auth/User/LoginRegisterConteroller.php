@@ -30,7 +30,7 @@ class LoginRegisterConteroller extends Controller
 
     public function LoginRegister(LoginRegisterRequest $request)
     {
-        $inputs = convertPersianToEnglish($request->all());
+        $inputs = convertPersianToEnglish($request->validated());
         //check id is email or not
         if (filter_var($inputs['id'], FILTER_VALIDATE_EMAIL)) {
             $type = 1; // 1 => email
@@ -59,43 +59,11 @@ class LoginRegisterConteroller extends Controller
             $newUser['activation'] = 1;
             $newUser['status'] = 1;
             $user = User::create($newUser);
-        }elseif ($user->status == 0) {
+        } elseif ($user->status == 0) {
             return to_route('auth.user.login-register-form')->withErrors(['id' => 'دسترسی شما مسدود شده است']);
         }
-        //create otp code
-        $otpCode = rand(111111, 999999);
-        $token = Str::random(50);
-        $otpInputs = [
-            'token' => $token,
-            'user_id' => $user->id,
-            'otp_code' => $otpCode,
-            'login_id' => $inputs['id'],
-            'type' => $type,
-        ];
-        Otp::create($otpInputs);
-        //send sms or email
-        if ($type == 0) {
-            //send sms
-            $smsService = new SmsService();
-            $smsService->setFrom(Config::get('sms.otp_from'));
-            $smsService->setTo(['0' . $user->mobile]);
-            $smsService->setText("باغ وحش \n  کد تایید : $otpCode");
-            $smsService->setIsFlash(true);
-            $messagesService = new MessageService($smsService);
-        } elseif ($type === 1) {
-            $emailService = new EmailService();
-            $details = [
-                'title' => 'ایمیل فعال سازی',
-                'body' => "کد فعال سازی شما : $otpCode"
-            ];
-            $emailService->setDetails($details);
-            $emailService->setFrom('noreply@example.com', 'example');
-            $emailService->setSubject('کد احراز هویت');
-            $emailService->setTo($inputs['id']);
-            $messagesService = new MessageService($emailService);
-        }
-        $messagesService->send();
-        return to_route('auth.user.login-register-confirm-form', $token);
+        return $this->createOtpAndSend($user, $inputs['id'] , $type);
+
     }
 
     public function LoginRegisterConfirmForm($token)
@@ -108,7 +76,7 @@ class LoginRegisterConteroller extends Controller
     }
     public function LoginRegisterConfirm(LoginRegisterRequest $request, $token)
     {
-        $inputs = $request->all();
+        $inputs = $request->validated();
         $otp = Otp::where('token', $token)->where('used', 0)->where('created_at', '>=', Carbon::now()->subMinute(2)->toDateTimeString())->first();
         if (empty($otp)) {
             return to_route('auth.user.login-register-confirm-form', $token)->withErrors(['id' => 'آدرس وارد شده نامعتبر می باشد']);
@@ -135,6 +103,11 @@ class LoginRegisterConteroller extends Controller
             return redirect()->route('auth.user.login-register-form', $token)->withErrors(['id' => 'ادرس وارد شده نامعتبر می باشد']);
         }
         $user = $otp->user()->first();
+        return $this->createOtpAndSend($user, $otp->login_id , $otp->type);
+    }
+
+    protected function createOtpAndSend($user, $login_id , $type)
+    {
         //create otp code
         $otpCode = rand(111111, 999999);
         $token = Str::random(50);
@@ -142,12 +115,12 @@ class LoginRegisterConteroller extends Controller
             'token' => $token,
             'user_id' => $user->id,
             'otp_code' => $otpCode,
-            'login_id' => $otp->login_id,
-            'type' => $otp->type,
+            'login_id' => $login_id,
+            'type' => $type,
         ];
         Otp::create($otpInputs);
         //send sms or email
-        if ($otp->type == 0) {
+        if ($type == 0) {
             //send sms
             $smsService = new SmsService();
             $smsService->setFrom(Config::get('sms.otp_from'));
@@ -155,7 +128,7 @@ class LoginRegisterConteroller extends Controller
             $smsService->setText("باغ وحش \n  کد تایید : $otpCode");
             $smsService->setIsFlash(true);
             $messagesService = new MessageService($smsService);
-        } elseif ($otp->type === 1) {
+        } elseif ($type === 1) {
             $emailService = new EmailService();
             $details = [
                 'title' => 'ایمیل فعال سازی',
@@ -164,7 +137,7 @@ class LoginRegisterConteroller extends Controller
             $emailService->setDetails($details);
             $emailService->setFrom('noreply@example.com', 'example');
             $emailService->setSubject('کد احراز هویت');
-            $emailService->setTo($otp->login_id);
+            $emailService->setTo($login_id);
             $messagesService = new MessageService($emailService);
         }
         $messagesService->send();

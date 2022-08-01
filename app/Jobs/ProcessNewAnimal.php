@@ -54,16 +54,6 @@ class ProcessNewAnimal implements ShouldQueue
 
     public function failed()
     {
-        $emailService = new EmailService();
-        $details = [
-            'title' =>  'خطا در اطلاع رسانی پست' . $this->animalName,
-            'body'  => "هنگام اطلاع رسانی پست جدید خطا رخ داد",
-        ];
-        $emailService->setDetails($details);
-        $emailService->setFrom('noreply@example.com', 'ZOO');
-        $emailService->setSubject('سایت باغ وحش');
-        $emailService->setTo('farah.kh1105@gmail.com');
-        $messagesService = new MessageService($emailService);
-        $messagesService->send();
+        $this->handle();
     }
 }

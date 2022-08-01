@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Animal;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Animal\AnimalProtectiveStatusRequest;
 use App\Models\Admin\Animal\AnimalProtectiveStatus;
 use Illuminate\Http\Request;
 
@@ -35,16 +36,10 @@ class AnimalProtectiveStatusController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AnimalProtectiveStatusRequest $request)
     {
-        $validated = $request->validate([
-            'title'        => 'required|max:120|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي.,() ]+$/u',
-            'description'  => 'required|min:1',
-        ]);
-
-        $protectiveStatus = AnimalProtectiveStatus::create($request->all());
+        $protectiveStatus = AnimalProtectiveStatus::create($request->validated());
         return redirect()->route('admin.animal.protectiveStatus.index')->with('swal-success', ' وضعیت حفاظتی جدید با موفقیت ایجاد شد');
-
     }
 
     /**
@@ -76,14 +71,10 @@ class AnimalProtectiveStatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request , AnimalProtectiveStatus $status)
+    public function update(AnimalProtectiveStatusRequest $request , AnimalProtectiveStatus $status)
     {
-        $validated = $request->validate([
-            'title'        => 'required|max:120|min:2|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي.,() ]+$/u',
-            'description'  => 'required|min:1',
-        ]);
 
-        $protectiveStatus = $status->update($request->all());
+        $protectiveStatus = $status->update($request->validated());
         return redirect()->route('admin.animal.protectiveStatus.index')->with('swal-success', ' وضعیت حفاظتی با موفقیت ویرایش شد');
 
     }
@@ -100,23 +91,10 @@ class AnimalProtectiveStatusController extends Controller
         return redirect()->route('admin.animal.protectiveStatus.index')->with('swal-success', ' وضعیت حفاظتی با موفقیت حذف شد');
     }
 
-    
+
     public function status(AnimalProtectiveStatus $status)
     {
-        if ($status->getRawOriginal('status') == 0) {
-            $status->status = 1;
-        } else {
-            $status->status = 0;
-        }
-        $result = $status->save();
-        if ($result) {
-            if ($status->getRawOriginal('status') == 0) {
-                return response()->json(['status' => true, 'checked' => false]);
-            } else {
-                return response()->json(['status' => true, 'checked' => true]);
-            }
-        } else {
-            return response()->json(['status' => false]);
-        }
+        return setStatus($status);
     }
+
 }

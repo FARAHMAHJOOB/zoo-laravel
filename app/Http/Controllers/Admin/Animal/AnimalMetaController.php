@@ -36,7 +36,7 @@ class AnimalMetaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request , Animal $animal)
+    public function store(Request $request, Animal $animal)
     {
         $flag = DB::transaction(function () use ($request, $animal) {
             $metas = array_combine($request->meta_key, $request->meta_value);
@@ -88,12 +88,7 @@ class AnimalMetaController extends Controller
     public function update(Request $request, AnimalMeta $meta)
     {
         $result = $meta->update($request->all());
-        // return redirect()->route('admin.animal.edit', $meta->animal->id)->with('swal-success', 'ویژگی با موفقیت ویرایش شد');
-        if ($result) {
-            return response()->json(['status' => true]);
-        } else {
-            return response()->json(['status' => false]);
-        }
+        return $result == true ? response()->json(['status' => true]) : response()->json(['status' => false]);
     }
 
     /**
@@ -104,8 +99,8 @@ class AnimalMetaController extends Controller
      */
     public function destroy(AnimalMeta $meta)
     {
-        // $meta->delete();
-        // return redirect()->route('admin.animal.edit', $meta->animal->id)->with('swal-success', 'ویژگی با موفقیت حذف شد');
-        
+        $meta->delete();
+        return redirect()->route('admin.animal.edit', $meta->animal->id)->with('swal-success', 'ویژگی با موفقیت حذف شد');
+
     }
 }

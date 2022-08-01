@@ -30,19 +30,13 @@ class UserAccountController extends Controller
     {
         $user = User::find(Auth::user()->id);
         $inputs = $request->all();
-        if ($request->hasFile('profile_photo_path')) {
-            if (!empty($user->profile_photo_path)) {
-                $imageService->deleteImage(Auth::user()->profile_photo_path);
-            }
-            $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'users');
-            $result = $imageService->save($request->file('profile_photo_path'));
+        $inputs['profile_photo_path'] = $imageService->storeImage($request, 'profile_photo_path', 'users', 'save');
 
-            if ($result === false) {
-                return response()->json(['status' => false]);
-            }
-            $inputs['profile_photo_path'] = $result;
+        if (!empty($user->profile_photo_path)) {
+            $imageService->deleteImage($user->profile_photo_path);
         }
-        $user->profile_photo_path = $result;
+
+        $user->profile_photo_path = $inputs['profile_photo_path'] ;
         $user->save();
         return response()->json(['status' => true, 'userImg' => asset($user->profile_photo_path)]);
     }

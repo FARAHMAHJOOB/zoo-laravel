@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Animal;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Admin\Animal\Animal;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Animal\AnimalCategory;
 use App\Http\Requests\Admin\Animal\AnimalCategoriesRequest;
@@ -42,22 +39,11 @@ class AnimalCategoryController extends Controller
      */
     public function store(AnimalCategoriesRequest $request , ImageService $imageService)
     {
-        $flag = DB::transaction(function () use ($request, $imageService) {
-            $inputs = $request->all();
-            if ($request->hasFile('image')) {
-                $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'animal-category');
-                $result = $imageService->save($request->file('image'));
-            }
-            if ($result === false) {
-                return redirect()->route('admin.animal.category.create')->with('swal-error', 'آپلود تصویر با خطا مواجه شد');
-            }
-            $inputs['image'] = $result;
-            $animalCategory = AnimalCategory::create($inputs);
-            return true;
-        });
-        if ($flag) {
-            return redirect()->route('admin.animal.category.index')->with('swal-success', 'دسته بندی جدید با موفقیت ثبت شد');
-        }
+        $inputs = $request->validated();
+        // fix image
+        $inputs['image'] = $imageService->storeImage($request , 'image' , 'animal-category', 'save');
+        $animalCategory = AnimalCategory::create($inputs);
+        return endTransaction($animalCategory, 'admin.animal.category.index', 'دسته بندی جدید با موفقیت ثبت شد');
     }
 
     /**
@@ -80,7 +66,7 @@ class AnimalCategoryController extends Controller
     public function edit(AnimalCategory $category)
     {
         $animalCategories = AnimalCategory::where('parent_id', null)->get()->except($category->id);
-        return view('admin.animal.category.edit', compact('animalCategories' , 'category'));
+        return view('admin.animal.category.edit', compact('animalCategories', 'category'));
     }
 
     /**
@@ -90,27 +76,16 @@ class AnimalCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(AnimalCategoriesRequest $request , ImageService $imageService,AnimalCategory $category)
+    public function update(AnimalCategoriesRequest $request, ImageService $imageService, AnimalCategory $category)
     {
-        $flag = DB::transaction(function () use ($request, $imageService, $category) {
-            $inputs = $request->all();
-            if ($request->hasFile('image')) {
-                if (!empty($category->image)) {
-                    $imageService->deleteImage($category->image);
-                }
-                $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'animal-category');
-                $result = $imageService->save($request->file('image'));
-                if ($result === false) {
-                    return redirect()->route('admin.animal.category.create')->with('swal-error', 'آپلود تصویر با خطا مواجه شد');
-                }
-                $inputs['image'] = $result;
-            }
-            $animalCategory = $category->update($inputs);
-            return true;
-        });
-        if ($flag) {
-            return redirect()->route('admin.animal.category.index')->with('swal-success', 'دسته بندی با موفقیت ویرایش شد');
+        $inputs = $request->validated();
+        // fix image
+        $inputs['image'] = $imageService->storeImage($request , 'image' , 'animal-category', 'save');
+        if (!empty($category->image)) {
+            $imageService->deleteImage($category->image);
         }
+        $animalCategory = $category->update($inputs);
+        return endTransaction($animalCategory, 'admin.animal.category.index', 'دسته بندی با موفقیت ویرایش شد');
     }
 
     /**
@@ -125,23 +100,9 @@ class AnimalCategoryController extends Controller
         return redirect()->route('admin.animal.category.index')->with('swal-success', 'دسته بندی با موفقیت حذف شد');
     }
 
-    
+
     public function status(AnimalCategory $category)
     {
-        if ($category->getRawOriginal('status') == 0) {
-            $category->status = 1;
-        } else {
-            $category->status = 0;
-        }
-        $result = $category->save();
-        if ($result) {
-            if ($category->getRawOriginal('status') == 0) {
-                return response()->json(['status' => true, 'checked' => false]);
-            } else {
-                return response()->json(['status' => true, 'checked' => true]);
-            }
-        } else {
-            return response()->json(['status' => false]);
-        }
+        return setStatus($category);
     }
 }

@@ -4,6 +4,7 @@ use Morilog\Jalali\Jalalian;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+
 function jalaliDate($date, $format = '%A , %d %B %Y H:i')
 {
     return Jalalian::forge($date)->format($format);
@@ -17,10 +18,11 @@ function activeLink($route)
         return '';
     }
 }
-function checkStatusRecord($record){
+function checkStatusRecord($record)
+{
     if ($record->getRawOriginal('status') == 0) {
         abort(404);
-     }
+    }
 }
 
 function convertPersianToEnglish($number)
@@ -55,13 +57,32 @@ function convertEnglishToPersian($number)
     return $number;
 }
 
- function showAbort($code)
-{
 
-    // if(Request::is('/admin/*')) {
-    //     return response()->view("admin/errors.{$code}", ['exception' => $e], $code, $e->getHeaders());
-    // }else {
-    //     return response()->view("site/errors.{$code}", ['exception' => $e], $code, $e->getHeaders());
-    // }
+function setDate($request , $field)
+{
+    $realTimestampStart = substr($request->$field , 0, 10);
+    $inputs[$field] = date("Y-m-d H:i:s", (int)$realTimestampStart);
+    return $inputs[$field];
 }
 
+
+function endTransaction($flag  , $route , $message)
+{
+    if ($flag) {
+        return to_route($route)->with('swal-success', $message);
+    } else {
+        return redirect()->back()->with('swal-error', 'در انجام عملیات مشکلی پیش آمد، مجددا امتحان کنید');
+    }
+}
+
+function setStatus($record)
+{
+    dd($record);
+    $record->status = $record->getRawOriginal('status') == 0 ? 1 : 0;
+    $result = $record->save();
+    if ($result) {
+        return $record->getRawOriginal('status') == 0 ? response()->json(['status' => true, 'checked' => false]) : response()->json(['status' => true, 'checked' => true]);
+    } else {
+        return response()->json(['status' => false]);
+    }
+}

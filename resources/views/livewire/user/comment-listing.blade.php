@@ -5,7 +5,8 @@
                 <form wire:submit.prevent="addComment" id="addCommentForm">
                     <div class="form-group mb-1" wire:ignore>
                         <label for="body" class="mb-4 h2 tm-text-primary ">دیدگاه شما</label>
-                        <textarea data-message="@this" wire:model="body" name="body" id="body" class="form-control form-control-sm required">{{ old('body') }} </textarea>
+                        <textarea data-message="@this" wire:model="body" name="body" id="body"
+                            class="form-control form-control-sm required">{{ old('body') }} </textarea>
                     </div>
                     @error('body')
                         <div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between"
@@ -24,7 +25,8 @@
                 </form>
             </section>
         @else
-            <p class="h5 mr-5 pr-5 my-5"> برای ثبت نظر باید در سایت <a href="{{ route('auth.user.login-register-form') }}">ثبت نام </a>
+            <p class="h5 mr-5 pr-5 my-5"> برای ثبت نظر باید در سایت <a
+                    href="{{ route('auth.user.login-register-form') }}">ثبت نام </a>
                 کنید یا وارد <a href="{{ route('auth.user.login-register-form') }}">حساب کاربری</a> خود شوید. </p>
         @endif
         <h2 class="tm-text-primary mb-5 mr-md-5 pr-md-5">
@@ -34,56 +36,56 @@
             <div class="card">
                 <ul class="list-unstyled">
                     @if (Auth::check() && $unAprovedComments->count() > 0)
-                        @if ($unAprovedComments[0]->user == Auth::user())
-                            @foreach ($unAprovedComments as $unAprovedComment)
-                                <li class="media my-3">
-                                    <div class="media-body pl-2">
-                                        <div class="media mt-3 comment">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <section class="d-flex align-items-center ">
-                                                    <img src="{{ asset($unAprovedComment->user->profile_photo_path ?? 'images/users/defultProfile.png' ) }}"
-                                                        class="align-self-center mr-1 my-2">
-                                                    <span>
-                                                        <p class="user-name my-auto font-weight-bold">
-                                                            @if(!empty($unAprovedComment->user->first_name) && !empty($unAprovedComment->user->last_name))
+                        @foreach ($unAprovedComments as $unAprovedComment)
+                            <li class="media my-3">
+                                <div class="media-body pl-2">
+                                    <div class="media mt-3 comment">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <section class="d-flex align-items-center ">
+                                                <img src="{{ asset($unAprovedComment->user->profile_photo_path ?? 'images/users/defultProfile.png') }}"
+                                                    class="align-self-center mr-1 my-2">
+                                                <span>
+                                                    <p class="user-name my-auto font-weight-bold">
+                                                        @if (!empty($unAprovedComment->user->first_name) && !empty($unAprovedComment->user->last_name))
                                                             {{ $unAprovedComment->user->fullName }}
-                                                            @else کاربر  @endif </p>
-                                                        <p class="comment-time">
-                                                            {{ convertEnglishToPersian(jalaliDate($unAprovedComment->created_at, '%Y/%m/%d H:i')) }}
-                                                        </p>
-                                                    </span>
-                                                </section>
-                                                <span
-                                                    class="d-flex flex-column flex-md-row justify-content-center ml-1 mt-1 mt-md-0 ml-md-3 mb-3 ">
-                                                    <button class="btn btn-warning py-1 px-2 rounded mx-1 my-1 my-md-0"
-                                                        title="ویرایش" id="editCommentBtn"
-                                                        onclick="scrollToCommentForm()"
-                                                        wire:click='setEditComment({{ $unAprovedComment->id }})'>
-                                                        <i class="fa fa-edit text-white " aria-hidden="true"></i>
-                                                    </button>
-                                                    <button class="btn btn-danger py-1 px-2 rounded mx-1 my-1 my-md-0"
-                                                        title="حذف"
-                                                        wire:click='setDestroyComment({{ $unAprovedComment->id }})'>
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                    <button class="btn btn-primary py-1 px-2 mx-1 my-1 my-md-0"
-                                                        title="پاسخ" onclick="scrollToCommentForm()"
-                                                        wire:click='setParentComment({{ $unAprovedComment->id }} , {{ $unAprovedComment->user->id }})'><i
-                                                            class="fa fa-reply"></i></button>
+                                                        @else
+                                                            کاربر
+                                                        @endif
+                                                    </p>
+                                                    <p class="comment-time">
+                                                        {{ convertEnglishToPersian(jalaliDate($unAprovedComment->created_at, '%Y/%m/%d H:i')) }}
+                                                    </p>
                                                 </span>
-                                            </div>
-                                            <div class="media-body">
-                                                <p class="reply">{!! $unAprovedComment->body !!}
-                                                <p class="text-primary h6"> دیدگاه شما پس از تایید توسط
-                                                    کارشناسان،
-                                                    نمایش داده خواهد شد.</p>
-                                                </p>
-                                            </div>
+                                            </section>
+                                            <span
+                                                class="d-flex flex-column flex-md-row justify-content-center ml-1 mt-1 mt-md-0 ml-md-3 mb-3 ">
+                                                <button class="btn btn-warning py-1 px-2 rounded mx-1 my-1 my-md-0"
+                                                    title="ویرایش" id="editCommentBtn" onclick="scrollToCommentForm()"
+                                                    wire:click='setEditComment({{ $unAprovedComment->id }})'>
+                                                    <i class="fa fa-edit text-white " aria-hidden="true"></i>
+                                                </button>
+                                                <button class="btn btn-danger py-1 px-2 rounded mx-1 my-1 my-md-0"
+                                                    title="حذف"
+                                                    wire:click='setDestroyComment({{ $unAprovedComment->id }})'>
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                                <button class="btn btn-primary py-1 px-2 mx-1 my-1 my-md-0"
+                                                    title="پاسخ" onclick="scrollToCommentForm()"
+                                                    wire:click='setParentComment({{ $unAprovedComment->id }} , {{ $unAprovedComment->user->id }})'><i
+                                                        class="fa fa-reply"></i></button>
+                                            </span>
+                                        </div>
+                                        <div class="media-body">
+                                            <p class="reply">{!! $unAprovedComment->body !!}
+                                            <p class="text-primary h6"> دیدگاه شما پس از تایید توسط
+                                                کارشناسان،
+                                                نمایش داده خواهد شد.</p>
+                                            </p>
                                         </div>
                                     </div>
-                                </li>
-                            @endforeach
-                        @endif
+                                </div>
+                            </li>
+                        @endforeach
                     @endif
                     @if ($comments->count() > 0)
                         @foreach ($comments as $comment)
@@ -92,13 +94,16 @@
                                     <div class="media mt-3 comment">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <section class="d-flex align-items-center ">
-                                                <img src="{{ asset($comment->user->profile_photo_path ?? 'images/users/defultProfile.png' ) }}"
+                                                <img src="{{ asset($comment->user->profile_photo_path ?? 'images/users/defultProfile.png') }}"
                                                     class="align-self-center mr-1 my-2">
                                                 <span>
                                                     <p class="user-name my-auto font-weight-bold">
-                                                        @if(!empty($comment->user->first_name) && !empty($comment->user->last_name))
+                                                        @if (!empty($comment->user->first_name) && !empty($comment->user->last_name))
                                                             {{ $comment->user->fullName }}
-                                                            @else کاربر  @endif</p>
+                                                        @else
+                                                            کاربر
+                                                        @endif
+                                                    </p>
                                                     <p class="comment-time">
                                                         {{ convertEnglishToPersian(jalaliDate($comment->created_at, '%Y/%m/%d H:i')) }}
                                                     </p>
@@ -144,9 +149,12 @@
                                                         class="align-self-center mr-1 my-2">
                                                     <span>
                                                         <p class="user-name my-auto font-weight-bold">
-                                                            @if(!empty($child->user->first_name) && !empty($child->user->last_name))
-                                                            {{ $child->user->fullName }}
-                                                            @else کاربر  @endif</p>
+                                                            @if (!empty($child->user->first_name) && !empty($child->user->last_name))
+                                                                {{ $child->user->fullName }}
+                                                            @else
+                                                                کاربر
+                                                            @endif
+                                                        </p>
                                                         <p class="comment-time">
                                                             {{ convertEnglishToPersian(jalaliDate($child->created_at, '%Y/%m/%d H:i')) }}
                                                         </p>
@@ -199,35 +207,6 @@
                 </div>
             </div>
         </div>
-
-
-
-        {{-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">ویرایش دیدگاه</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group">
-              <label for="message-text" class="col-form-label">متن نظر:</label>
-              <textarea class="form-control" id="message-text"></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info rounded" data-dismiss="modal">انصراف</button>
-          <button type="button" class="btn btn-success rounded">ثبت</button>
-        </div>
-      </div>
-    </div>
-  </div> --}}
-
-
         <script src="{{ asset('general-assets/ckeditor/ckeditor.js') }}"></script>
         <script src="https://cdn.ckeditor.com/4.16.1/full/ckeditor.js"></script>
         <script>

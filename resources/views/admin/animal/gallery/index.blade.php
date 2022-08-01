@@ -75,19 +75,15 @@
                                         @csrf
                                         <div class="form-group mb-2">
                                             <input type="file" class="form-control form-control-sm" placeholder="تصویر ..."
-                                                id="animal_image[]" name="animal_image[]">
+                                                id="animal_image" name="animal_image">
                                         </div>
-                                        @error('animal_image.*')
+                                        @error('animal_image')
                                             <span class="text-danger">
                                                 <strong>
                                                     {{ $message }}
                                                 </strong>
                                             </span>
                                         @enderror
-                                        <section>
-                                            <button type="button" class="btn light-blue text-dark btn-sm btn-hover mt-2"
-                                                id="addImageButton"> افزودن تصویر</button>
-                                        </section>
                                     </form>
                                 </section>
                             </div>
@@ -108,11 +104,6 @@
 
 @section('script')
     <script>
-        $("#addImageButton").click(function() {
-            var ele = $(this).parent().prev().clone();
-            $(this).before(ele);
-        })
-
         $("#addanimalGalleryFormButton").click(function() {
             $("#addanimalGalleryForm").submit();
         })

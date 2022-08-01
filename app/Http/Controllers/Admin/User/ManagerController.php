@@ -18,8 +18,8 @@ class ManagerController extends Controller
      */
     public function index()
     {
-        $Admins=User::where('user_type' , 1)->orderBy('id', 'desc')->get();
-        return view('admin.user.manager.index' , compact('Admins'));
+        $Admins = User::where('user_type', 1)->orderBy('id', 'desc')->get();
+        return view('admin.user.manager.index', compact('Admins'));
     }
 
     /**
@@ -30,7 +30,6 @@ class ManagerController extends Controller
     public function create()
     {
         return view('admin.user.manager.create');
-
     }
 
     /**
@@ -39,23 +38,14 @@ class ManagerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ManagerRequest $request,ImageService $imageService)
+    public function store(ManagerRequest $request, ImageService $imageService)
     {
-        $inputs = $request->all();
-        if ($request->hasFile('profile_photo_path')) {
-            $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'admins');
-            $result = $imageService->save($request->file('profile_photo_path'));
-
-            if ($result === false) {
-                return redirect()->route('admin.manager.index')->with('swal-error', 'آپلود تصویر با خطا مواجه شد');
-            }
-            $inputs['profile_photo_path'] = $result;
-        }
+        $inputs = $request->validated();
+        $inputs['profile_photo_path'] = $imageService->storeImage($request, 'profile_photo_path', 'admins', 'save');
         $inputs['password'] = Hash::make($request->password);
         $inputs['user_type'] = 1;
         $user = User::create($inputs);
         return redirect()->route('admin.manager.index')->with('swal-success', 'مدیر جدید با موفقیت ثبت شد');
-
     }
 
     /**
@@ -77,7 +67,7 @@ class ManagerController extends Controller
      */
     public function edit(User $admin)
     {
-        return view('admin.user.manager.edit' , compact('admin'));
+        return view('admin.user.manager.edit', compact('admin'));
     }
 
     /**
@@ -87,24 +77,17 @@ class ManagerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ManagerRequest $request, User $admin,ImageService $imageService)
+    public function update(ManagerRequest $request, User $admin, ImageService $imageService)
     {
-        $inputs = $request->all();
-        if ($request->hasFile('profile_photo_path')) {
-            if (!empty($admin->profile_photo_path)) {
-                $imageService->deleteImage($admin->profile_photo_path);
-            }
-            $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'admins');
-            $result = $imageService->save($request->file('profile_photo_path'));
+        $inputs = $request->validated();
+        $inputs['profile_photo_path'] = $imageService->storeImage($request, 'profile_photo_path', 'admins', 'save');
 
-            if ($result === false) {
-                return redirect()->route('admin.manager.index')->with('swal-error', 'آپلود تصویر با خطا مواجه شد');
-            }
-            $inputs['profile_photo_path'] = $result;
+        if (!empty($admin->profile_photo_path)) {
+            $imageService->deleteImage($admin->profile_photo_path);
         }
+
         $admin->update($inputs);
         return redirect()->route('admin.manager.index')->with('swal-success', 'مدیر با موفقیت ویرایش گردید');
-
     }
 
     /**
@@ -113,7 +96,7 @@ class ManagerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $admin , ImageService $imageService)
+    public function destroy(User $admin, ImageService $imageService)
     {
         if (!empty($admin->profile_photo_path)) {
             $imageService->deleteImage($admin->profile_photo_path);
@@ -126,17 +109,6 @@ class ManagerController extends Controller
 
     public function status(User $admin)
     {
-        $admin->status = $admin->status == 0 ? 1 : 0;
-        $result = $admin->save();
-        if ($result) {
-            if ($admin->status == 0) {
-                return response()->json(['status' => true, 'checked' => false]);
-            } else {
-                return response()->json(['status' => true, 'checked' => true]);
-            }
-        } else {
-            return response()->json(['status' => false]);
-        }
+        setStatus($admin);
     }
-
 }

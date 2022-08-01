@@ -39,7 +39,7 @@ class ContentMenuController extends Controller
      */
     public function store(ContentMenuRequest $request)
     {
-        Menu::create($request->all());
+        Menu::create($request->validated());
         return redirect()->route('admin.content.menu.index')->with('swal-success', 'منو جدید با موفقیت ثبت گردید');
     }
 
@@ -75,7 +75,7 @@ class ContentMenuController extends Controller
      */
     public function update(ContentMenuRequest $request, Menu $menu)
     {
-        $menu->update($request->all());
+        $menu->update($request->validated());
         return redirect()->route('admin.content.menu.index')->with('swal-success', 'منو با موفقیت ویرایش گردید');
     }
 
@@ -95,16 +95,7 @@ class ContentMenuController extends Controller
 
     public function status(Menu $menu)
     {
-        $menu->status = $menu->status == 0 ? 1 : 0;
-        $result = $menu->save();
-        if ($result) {
-            if ($menu->status == 0) {
-                return response()->json(['status' => true, 'checked' => false]);
-            } else {
-                return response()->json(['status' => true, 'checked' => true]);
-            }
-        } else {
-            return response()->json(['status' => false]);
-        }
+        return setStatus($menu);
+
     }
 }

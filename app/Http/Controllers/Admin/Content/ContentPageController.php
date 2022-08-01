@@ -38,7 +38,7 @@ class ContentPageController extends Controller
      */
     public function store(ContentPageRequest $request)
     {
-        Page::create($request->all());
+        Page::create($request->validated());
         return redirect()->route('admin.content.page.index')->with('swal-success', 'صفحه جدید با موفقیت ثبت گردید');
     }
 
@@ -73,7 +73,7 @@ class ContentPageController extends Controller
      */
     public function update(ContentPageRequest $request, Page $page)
     {
-        $page->update($request->all());
+        $page->update($request->validated());
         return redirect()->route('admin.content.page.index')->with('swal-success', 'صفحه با موفقیت ویرایش گردید');
     }
 
@@ -89,20 +89,10 @@ class ContentPageController extends Controller
         return redirect()->route('admin.content.page.index')->with('swal-success', 'صفحه با موفقیت حذف گردید');
     }
 
-    
+
     public function status(Page $page)
     {
-        $page->status = $page->status == 0 ? 1 : 0;
-        $result = $page->save();
-        if ($result) {
-            if ($page->status == 0) {
-                return response()->json(['status' => true, 'checked' => false]);
-            } else {
-                return response()->json(['status' => true, 'checked' => true]);
-            }
-        } else {
-            return response()->json(['status' => false]);
-        }
+        return setStatus($page);
     }
 
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Admin\Animal\Animal;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Animal\AnimalGalleryRequest;
 use App\Models\Admin\Animal\AnimalImage;
 use App\Http\Services\Image\ImageService;
 
@@ -47,35 +48,15 @@ class AnimalGalleryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, ImageService $imageService, Animal $animal)
+    public function store(AnimalGalleryRequest $request, ImageService $imageService, Animal $animal)
     {
-        $validated = $request->validate([
-            'animal_image.*' => 'required|image|mimes:png,jpg,jpeg,gif',
+        $inputs = $request->validated();
+        // fix image
+        $inputs['image'] = $imageService->storeImage($request , 'animal_image' , 'animal-gallery', 'save');
+        $animalImage = AnimalImage::create([
+            'animal_image' => $inputs['image'], 'animal_id' => $animal->id , 'status' => 1
         ]);
-        // dd($request->animal_image[0]);
-
-        if ($request->hasFile('animal_image')) {
-            $flag = DB::transaction(function () use ($request, $imageService, $animal) {
-                $inputs = $request->all();
-                $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'animal-gallery');
-                foreach ($inputs['animal_image'] as $value) {
-                    $result = $imageService->save($value);
-                    if ($result === false) {
-                        return redirect()->route('admin.animal.gallery.index', $animal->id)->with('swal-error', 'آپلود عکس با خطا مواجه شد');
-                    }
-                    $animalImage = AnimalImage::create([
-                        'animal_image' => $result, 'animal_id' => $animal->id, 'status' => 1
-                    ]);
-                }
-                return true;
-            });
-            if ($flag) {
-
-                return redirect()->route('admin.animal.gallery.index', $animal->id)->with('swal-success', 'گالری با موفقیت ثبت شد');
-            }
-        } else {
-            return redirect()->route('admin.animal.gallery.index', $animal->id)->with('swal-error', 'عکسی برای آپلود یافت نشد');
-        }
+        return redirect()->back()->with('swal-success' , 'رکورد جدید با موفقیت ایجاد شد');
     }
 
     /**
@@ -122,28 +103,12 @@ class AnimalGalleryController extends Controller
     {
         $image->delete();
         return redirect()->back()->with('swal-success', 'تصویر با موفقیت حذف شد');
-
-
     }
 
 
     public function status(AnimalImage $image)
     {
-        if ($image->status == 0) {
-            $image->status = 1;
-        } else {
-            $image->status = 0;
-        }
-        $result = $image->save();
-        if ($result) {
-            if ($image->status == 0) {
-                return response()->json(['status' => true, 'checked' => false]);
-            } else {
-                return response()->json(['status' => true, 'checked' => true]);
-            }
-        } else {
-            return response()->json(['status' => false]);
-        }
+        return setStatus($image);
     }
 
 
@@ -155,8 +120,6 @@ class AnimalGalleryController extends Controller
             }
             return true;
         });
-        if ($flag) {
-            return redirect()->route('admin.animal.gallery.allGallery')->with('swal-success', 'گالری با موفقیت حذف شد');
-        }
+        return endTransaction($flag, 'admin.animal.gallery.allGallery', 'گالری با موفقیت حذف شد');
     }
 }
