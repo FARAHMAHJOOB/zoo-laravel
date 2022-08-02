@@ -93,23 +93,6 @@
                 </section>
             </section>
 
-            <section class="sidebar-group-link">
-                <section class="sidebar-dropdown-toggle sidebar-link">
-                    <i class="fa fa-bullhorn icon"></i>
-                    <span>اطلاع رسانی</span>
-                    <i class="fas fa-angle-left angle"></i>
-                </section>
-                <section class="sidebar-dropdown mr-2">
-                    <a href="" class="sidebar-link">
-                        <i class="fa fa-envelope"></i>
-                        <span>اطلاعیه ایمیلی</span>
-                    </a>
-                    <a href="" class="sidebar-link">
-                        <i class="fas fa-sms"></i>
-                        <span>اطلاعیه پیامکی</span>
-                    </a>
-                </section>
-            </section>
             <!-- <section class="sidebar-part-title">تنظیمات</section> -->
             <a href="{{ route('admin.setting.index') }}" class="sidebar-link">
                 <i class="fas fa-cogs"></i>

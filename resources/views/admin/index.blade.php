@@ -10,8 +10,8 @@
                     <section class="card-body">
                         <section class="d-flex justify-content-between">
                             <section class="info-box-body">
-                                <h5>30,200 تومان</h5>
-                                <p>سود خالص</p>
+                                <h5>پنل مدیریت</h5>
+                                <p>باغ وحش</p>
                             </section>
                             <section class="info-box-icon">
                                 <i class="fas fa-chart-line"></i>
@@ -19,7 +19,7 @@
                         </section>
                     </section>
                     <section class="card-footer info-box-footer">
-                        <i class="fas fa-clock mx-2"></i> به روز رسانی شده در : 21:42 بعد از ظهر
+                        <i class="fas fa-clock mx-2"></i> 
                     </section>
                 </section>
             </a>

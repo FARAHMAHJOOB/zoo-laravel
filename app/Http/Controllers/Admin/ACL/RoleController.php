@@ -7,6 +7,7 @@ use App\Models\Admin\ACL\Role;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\ACL\Permission;
+use Database\Seeders\PermissionsSeeder;
 use App\Http\Requests\Admin\ACL\RoleRequest;
 
 class RoleController extends Controller
@@ -18,14 +19,11 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-
-        // $permissions = Permission::all();
+        if (!Permission::exists()) {
+            $default = new PermissionsSeeder;
+            $default->run();
+        }
         $roles = Role::orderByDesc('id')->get();
-        // if ($permissions === null) {
-        //     $default = new PermissionSeeder;
-        //     $default->run();
-        //     $permissions = Permission::first();
-        // }
         return view('admin.user.ACL.index', compact('roles'));
     }
 

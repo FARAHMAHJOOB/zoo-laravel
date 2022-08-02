@@ -68,7 +68,7 @@ class AdminSettingController extends Controller
     public function edit(Setting $setting)
     {
         return view('admin.setting.edit', compact('setting'));
-        
+
     }
 
     /**
@@ -80,7 +80,7 @@ class AdminSettingController extends Controller
      */
     public function update(AdminSettingRequest $request, Setting $setting ,ImageService $imageService)
     {
-        $inputs = $request->all();
+        $inputs = $request->validated();
 
         if($request->hasFile('logo'))
         {
@@ -113,10 +113,10 @@ class AdminSettingController extends Controller
             }
             $inputs['icon'] = $result;
         }
-               
+
         $setting->update($inputs);
         return redirect()->route('admin.setting.index')->with('swal-success', 'تنظیمات سایت  شما با موفقیت ویرایش شد');
-  
+
     }
 
     /**

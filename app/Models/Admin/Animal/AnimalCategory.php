@@ -22,11 +22,7 @@ class AnimalCategory extends Model
 
    public function getStatusAttribute($status)
    {
-       if ($status == 0) {
-           return 'غیرفعال';
-       } else {
-           return 'فعال';
-       }
+       return $status == 0 ? 'غیرفعال':'فعال';
    }
 
     protected $guarded=['id'];
