@@ -29,7 +29,7 @@ class AnimalCategory extends Model
 
     public function parent()
     {
-       return $this->belongsTo(AnimalCategory::class);
+       return $this->belongsTo(AnimalCategory::class)->withDefault(['name' => '-']);
     }
     public function childs()
     {
